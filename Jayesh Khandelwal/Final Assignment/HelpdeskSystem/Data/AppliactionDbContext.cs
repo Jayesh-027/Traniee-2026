@@ -1,14 +1,17 @@
 ﻿using HelpdeskSystem.Models;
+using HelpdeskSystem.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelpdeskSystem.Data
 {
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        private readonly ICurrentUserService _currentUserService;
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUserService currentUserService) : base(options)
         {
-
+            _currentUserService = currentUserService;
         }
         public DbSet<Company> Companies { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
@@ -114,6 +117,17 @@ namespace HelpdeskSystem.Data
                     .HasForeignKey(n => n.TicketId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+            builder.Entity<Ticket>()
+                .HasQueryFilter(t => t.CompanyId == _currentUserService.GetCompanyId());
+
+            builder.Entity<TicketComment>()
+                .HasQueryFilter(c => c.CompanyId == _currentUserService.GetCompanyId());
+
+            builder.Entity<TicketHistory>()
+                .HasQueryFilter(h => h.CompanyId == _currentUserService.GetCompanyId());
+
+            builder.Entity<Notification>()
+                .HasQueryFilter(n => n.CompanyId == _currentUserService.GetCompanyId());
         }
     }
 }

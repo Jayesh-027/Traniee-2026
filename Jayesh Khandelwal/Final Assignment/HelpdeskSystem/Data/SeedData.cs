@@ -22,11 +22,11 @@ namespace HelpdeskSystem.Data
             {
                 context.Companies.AddRange(new Company
                 {
-                    Name = "Company A"
+                    Name = "Amazon"
                 },
                     new Company
                     {
-                        Name = "Company B"
+                        Name = "Flipkart"
                     });
                 await context.SaveChangesAsync();
             }
@@ -38,13 +38,13 @@ namespace HelpdeskSystem.Data
 
             var companyA = companies[0];
             var companyB = companies[1];
-            //Company A Data
+            //Amazon Data
             var adminA = await CreateUser(
                userManager,
                "adminA@gmail.com",
                "Admin@123",
                companyA.Id,
-               "CompanyAdmin");
+               "CompanyAdmin"); 
 
             var agentA = await CreateUser(
                 userManager,
@@ -60,7 +60,7 @@ namespace HelpdeskSystem.Data
                 companyA.Id,
                 "Customer");
 
-            //Company B DATA
+            //Flipkart DATA
             var adminB = await CreateUser(
                 userManager,
                 "adminB@gmail.com",
@@ -83,7 +83,7 @@ namespace HelpdeskSystem.Data
                 "Customer");
 
             //Tickets
-            if (!await context.Tickets.AnyAsync())
+            if (!await context.Tickets.IgnoreQueryFilters().AnyAsync())
             {
                 context.Tickets.AddRange(
                     new Ticket
@@ -98,6 +98,20 @@ namespace HelpdeskSystem.Data
                         CreatedByUser = customerA,
                         FirstResponseDue = DateTime.Now.AddHours(1),
                         ResolutionDue = DateTime.Now.AddHours(8),
+                        CreatedAt = DateTime.Now
+                    },
+                    new Ticket
+                    {
+                        Title = "Payment Issue",
+                        Description = "Payment is  being Deducted but not recieved to vendor",
+                        Status = TicketStatus.New,
+                        Priority = TicketPriority.Medium,
+                        CompanyId = companyA.Id,
+                        Company = companyA,
+                        CreatedByUserId = customerB.Id,
+                        CreatedByUser = customerB,
+                        FirstResponseDue = DateTime.Now.AddHours(4),
+                        ResolutionDue = DateTime.Now.AddHours(24),
                         CreatedAt = DateTime.Now
                     },
                     new Ticket

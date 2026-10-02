@@ -4,7 +4,7 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="container">
+<div class="login-container">
     <div class="form">
 
         <h2>Login</h2>
@@ -23,8 +23,8 @@
                 <span asp-validation-for="Password"></span>
             </div>
 
-            <button type="submit" class="btn">Login</button>
-
+            <button type="submit" class="btn-login">Login</button>
+            <p>Dont have an Account?<a asp-controller="Account" asp-action="Register">Register</a></p>
             <div asp-validation-summary="ModelOnly"></div>
 
         </form>

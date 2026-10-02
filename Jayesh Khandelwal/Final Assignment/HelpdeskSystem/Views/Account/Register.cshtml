@@ -1,0 +1,51 @@
+﻿@model HelpdeskSystem.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="login-container">
+    <div class="form">
+
+        <h2>Register</h2>
+
+        <form asp-action="Register" method="post">
+
+            <div>
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="input" />
+                <span asp-validation-for="Email"></span>
+            </div>
+
+            <div>
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="input" type="password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <div>
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="input" type="password" />
+                <span asp-validation-for="ConfirmPassword"></span>
+            </div>
+
+            <div>
+                <label asp-for="CompanyId">Company</label>
+                <select asp-for="CompanyId" class="input">
+                    <option value="">Select Company</option>
+                    @foreach (var company in ViewBag.Companies)
+                    {
+                        <option value="@company.Id">@company.Name</option>
+                    }
+                </select></select>
+                <span asp-validation-for="CompanyId"></span>
+            </div>
+
+            <button type="submit" class="btn">Register</button>
+
+            <div asp-validation-summary="ModelOnly"></div>
+
+        </form>
+
+    </div>
+</div>
