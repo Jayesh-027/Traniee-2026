@@ -56,5 +56,17 @@ namespace HelpdeskSystem.Repositories
 
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<Ticket?> GetByIdAsync(int id)
+        {
+            return await _context.Tickets.Include(t => t.AssignedToUser)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        public async Task<bool> UpdateAsync(Ticket ticket)
+        {
+            _context.Tickets.Update(ticket);
+            return await _context.SaveChangesAsync()>0;
+        }
     }
 }

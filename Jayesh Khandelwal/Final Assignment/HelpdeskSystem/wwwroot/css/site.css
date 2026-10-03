@@ -90,7 +90,7 @@ input:focus,
 select:focus {
     outline: none;
     box-shadow: none;
-    border-color: #ced4da;
+    border-color: #333;
 }
 
 button:focus,
@@ -105,17 +105,17 @@ select:focus-visible {
 
 .ticket-container {
     width: 90%;
-    margin: 50px auto;
+    margin: 30px auto;
 }
 
 .ticket-header {
-    margin-bottom: 35px;
+    margin-bottom: 20px;
     text-align: center;
 }
 
     .ticket-header h2 {
         font-size: 36px;
-        margin-bottom: 8px;
+        margin-bottom: 1px;
     }
 
     .ticket-header p {
@@ -144,7 +144,7 @@ select:focus-visible {
 
 .ticket-description {
     color: #555;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
 .ticket-card p {
@@ -159,6 +159,7 @@ select:focus-visible {
 
 .ticket-button {
     padding: 9px 16px;
+    margin:3px;
     border: 1px solid #333;
     border-radius: 5px;
     background-color: white;
@@ -215,4 +216,12 @@ select:focus-visible {
     align-items: center;
     gap: 15px;
     margin-top: 35px;
+}
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+    outline: none;
+    border-color: #333;
+    box-shadow: 0 0 0 1px #333;
 }

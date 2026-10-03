@@ -1,0 +1,70 @@
+﻿@model HelpdeskSystem.Models.Ticket
+
+@{
+    ViewData["Title"] = "Ticket Details";
+}
+
+<div class="ticket-container">
+
+    <div class="ticket-header">
+        <h2>Ticket Details</h2>
+        <p>View and manage ticket</p>
+    </div>
+
+    <div class="ticket-card">
+        <h3>@Model.Title</h3>
+
+        <p class="ticket-description">
+            @Model.Description
+        </p>
+        <p>
+            <strong>Priority:</strong>
+            @Model.Priority
+        </p>
+        <p>
+            <strong>Status:</strong>
+            @Model.Status
+        </p>
+        <p>
+            <strong>Assigned To:</strong>
+            @if (Model.AssignedToUser != null)
+            {
+                @Model.AssignedToUser.Email
+            }
+            else
+            {
+                <span>Not Assigned</span>
+            }
+        </p>
+        <p>
+            <strong>Created:</strong>
+            @Model.CreatedAt.ToString("dd-MM-yyyy HH:mm")
+        </p>
+        <p>
+            <strong>First Response Due:</strong>
+            @Model.FirstResponseDue.ToString("dd-MM-yyyy HH:mm")
+        </p>
+
+        <p>
+            <strong>Resolution Due:</strong>
+            @Model.ResolutionDue.ToString("dd-MM-yyyy HH:mm")
+        </p>
+        @if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
+        {
+            <div class="ticket-actions">
+
+                <button type="button" class="ticket-button" onclick="goToAssign(@Model.Id)">
+                    Assign Ticket
+                </button>
+
+                <button type="button" class="ticket-button" onclick="goToStatus(@Model.Id)">
+                    Update Status
+                </button>
+
+            </div>
+        }
+        <div class="ticket-buttons">
+            <a asp-controller="Ticket" asp-action="Index" class="ticket-button">Back to Tickets </a>
+        </div>
+    </div>
+</div>

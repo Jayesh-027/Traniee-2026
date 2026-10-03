@@ -8,5 +8,7 @@ namespace HelpdeskSystem.Repositories
 
         Task<List<Ticket>> GetByUserIdAsync(string userId);
         Task<bool> CreateAsync(Ticket ticket);
+        Task<Ticket?> GetByIdAsync(int id);
+        Task<bool> UpdateAsync(Ticket ticket);
     }
 }

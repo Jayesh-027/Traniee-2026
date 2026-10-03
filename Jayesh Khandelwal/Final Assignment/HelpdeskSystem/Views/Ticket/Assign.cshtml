@@ -1,0 +1,50 @@
+﻿@model HelpdeskSystem.Models.Ticket
+
+@{
+    ViewData["Title"] = "Assign Ticket";
+}
+
+<div class="ticket-container">
+
+    <div class="ticket-header">
+        <h2>Assign Ticket</h2>
+        <p>@Model.Title</p>
+    </div>
+
+    <div class="ticket-card">
+
+        <form action="/api/tickets/@Model.Id/assign" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <label>Select Agent</label>
+
+            <select name="agentId" class="filter-input" required>
+                <option value="">Select Agent</option>
+
+                @foreach (var agent in ViewBag.Agents)
+                {
+                    <option value="@agent.Id">
+                        @agent.Email
+                    </option>
+                }
+            </select>
+
+            <div class="ticket-buttons">
+
+                <button type="submit" class="ticket-button">
+                    Save
+                </button>
+
+                <a href="/Ticket/Details/@Model.Id"
+                   class="ticket-button">
+                    Back
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
