@@ -12,5 +12,8 @@ namespace HelpdeskSystem.Services
         Task<Result<Ticket>> GetTicketByIdAsync(int id);
         Task<Result<bool>> ChangeStatusAsync(int id, TicketStatus newStatus);
         Task<Result<bool>> AssignTicketAsync(int id, string agentId);
+        Task<Result<bool>> AddCommentAsync(int ticketId, string comment);
+        Task<List<TicketComment>> GetCommentsAsync(int ticketId);
+        Task<List<TicketHistory>> GetHistoryAsync(int ticketId);
     }
 }

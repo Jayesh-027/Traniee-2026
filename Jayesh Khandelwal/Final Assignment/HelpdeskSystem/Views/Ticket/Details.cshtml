@@ -53,18 +53,34 @@
         {
             <div class="ticket-actions">
 
-                <button type="button" class="ticket-button" onclick="goToAssign(@Model.Id)">
-                    Assign Ticket
-                </button>
+                <a href="/tickets/@Model.Id/Assign" class="ticket-button"> Assign Ticket </a>
 
-                <button type="button" class="ticket-button" onclick="goToStatus(@Model.Id)">
-                    Update Status
-                </button>
+                <a href="/tickets/@Model.Id/Status" class="ticket-button"> Update Status  </a>
+
+                <a asp-controller="Ticket" asp-action="Comments" asp-route-id="@Model.Id" class="ticket-button">
+                    Comments
+                </a>
+
+                <a asp-controller="Ticket" asp-action="History"asp-route-id="@Model.Id" class="ticket-button">
+                    History
+                </a>
+
+            </div>
+        }
+        @if (User.IsInRole("Customer"))
+        {
+            <div class="ticket-actions">
+                            
+                <a asp-controller="Ticket" asp-action="Comments" asp-route="@Model.Id" class="ticket-button">
+                    Comments
+                </a>
 
             </div>
         }
         <div class="ticket-buttons">
             <a asp-controller="Ticket" asp-action="Index" class="ticket-button">Back to Tickets </a>
         </div>
+       
+
     </div>
 </div>

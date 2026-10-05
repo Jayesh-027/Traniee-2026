@@ -9,3 +9,4 @@ function goToAssign(id) {
 function goToStatus(id) {
     window.location.href = "/tickets/" + id + "/Status";
 }
+

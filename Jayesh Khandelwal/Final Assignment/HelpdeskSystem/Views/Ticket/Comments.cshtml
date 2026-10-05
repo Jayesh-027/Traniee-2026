@@ -1,0 +1,80 @@
+﻿@using HelpdeskSystem.Models
+@model Ticket
+
+@{
+    ViewData["Title"] = "Comments";
+    var comments = ViewBag.Comments as List<TicketComment>;
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h2 class="mb-4">Ticket Comments</h2>
+
+            <div class="mb-4">
+                <h5>@Model.Title</h5>
+                <p>@Model.Description</p>
+            </div>
+
+            <hr />
+
+            <h5 class="mb-3">Comments</h5>
+
+            <div id="commentsContainer">
+
+                @if (comments == null || comments.Count == 0)
+                {
+                    <p id="noCommentsMessage">No comments yet.</p>
+                }
+                else
+                {
+                    foreach (var comment in comments)
+                    {
+                        <div class="border rounded p-3 mb-3">
+                            <small class="text-muted">
+                                @comment.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                            </small>
+
+                            <p class="mb-0 mt-2">
+                                @comment.Comment
+                            </p>
+                        </div>
+                    }
+                }
+
+            </div>
+
+            <hr />
+
+            <h5 class="mb-3">Add Comment</h5>
+
+            <input type="hidden"
+                   id="ticketId"
+                   value="@Model.Id" />
+
+            @Html.AntiForgeryToken()
+
+            <textarea id="commentText"
+                      class="form-control mb-3"
+                      rows="4"
+                      placeholder="Write your comment"></textarea>
+
+            <div id="commentMessage" class="mb-3"></div>
+
+            <button type="button"
+                    class="ticket-button"
+                    onclick="addComment(@Model.Id)">
+                Save
+            </button>
+
+            <a href="/Ticket/Details/@Model.Id"
+               class="ticket-button">
+                Back
+            </a>
+
+        </div>
+    </div>
+
+</div>

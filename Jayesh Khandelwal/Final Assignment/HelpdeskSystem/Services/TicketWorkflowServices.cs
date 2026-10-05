@@ -6,31 +6,43 @@ namespace HelpdeskSystem.Services
     {
         public bool CanChangeStatus(TicketStatus currentStatus,TicketStatus newStatus)
         {
-            if (currentStatus == TicketStatus.New &&   newStatus == TicketStatus.Assigned)
-            {
-                return true;
-            }
+            return GetNextStatuses(currentStatus)
+                .Contains(newStatus);
+        }
 
-            if (currentStatus == TicketStatus.Assigned && newStatus == TicketStatus.InProgress)
+        public List<TicketStatus> GetNextStatuses(TicketStatus currentStatus)
+        {
+            return currentStatus switch
             {
-                return true;
-            }
+                TicketStatus.New =>
+                    new List<TicketStatus>
+                    {
+                        TicketStatus.Assigned
+                    },
 
-            if (currentStatus == TicketStatus.InProgress && newStatus == TicketStatus.Resolved)
-             {
-                return true;
-            }
+                TicketStatus.Assigned =>
+                    new List<TicketStatus>
+                    {
+                        TicketStatus.InProgress
+                    },
 
-            if (currentStatus == TicketStatus.Resolved && newStatus == TicketStatus.InProgress)
-            {
-                return true;
-            }
+                TicketStatus.InProgress =>
+                    new List<TicketStatus>
+                    {
+                        TicketStatus.Resolved
+                    },
 
-            if (currentStatus == TicketStatus.Resolved && newStatus == TicketStatus.Closed)
-            {
-                return true;
-            }
-            return false;
+                TicketStatus.Resolved =>
+                    new List<TicketStatus>
+                    {
+                        TicketStatus.InProgress, TicketStatus.Closed
+                    },
+
+                TicketStatus.Closed =>
+                    new List<TicketStatus>(),
+
+                _ => new List<TicketStatus>()
+            };
         }
     }
 }

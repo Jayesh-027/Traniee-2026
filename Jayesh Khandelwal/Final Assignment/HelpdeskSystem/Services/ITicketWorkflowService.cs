@@ -1,7 +1,10 @@
-﻿namespace HelpdeskSystem.Services
+﻿using HelpdeskSystem.Models;
+
+namespace HelpdeskSystem.Services
 {
     public interface ITicketWorkflowService
     {
         bool CanChangeStatus(Models.TicketStatus currentStatus,Models.TicketStatus newStatus);
+        List<TicketStatus> GetNextStatuses(TicketStatus currentStatus);
     }
 }

@@ -90,6 +90,15 @@
                         <strong>Status:</strong>
                         @ticket.Status
                     </p>
+                    @if ((!ticket.FirstRespondedAt.HasValue &&  ticket.FirstResponseDue < DateTime.Now) ||
+                         (ticket.Status != TicketStatus.Resolved &&
+                          ticket.Status != TicketStatus.Closed &&
+                          ticket.ResolutionDue < DateTime.Now))
+                    {
+                        <span class="ticket-overdue-badge">
+                            Overdue
+                        </span>
+                    }
                     <p>
                         <strong>Created:</strong>
                         @ticket.CreatedAt.ToString("dd-MM-yyyy")

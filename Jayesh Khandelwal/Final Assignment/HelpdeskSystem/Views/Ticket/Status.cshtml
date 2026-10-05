@@ -18,19 +18,34 @@
             @Model.Status
         </p>
 
-        <form action="/api/tickets/@Model.Id/status" method="post">
+        <form action="/api/tickets/@Model.Id/status"
+              method="post">
 
             @Html.AntiForgeryToken()
 
             <label>Select Status</label>
 
-            <select name="status" class="filter-input" required>
-                <option value="">Select Status</option>
+            <select name="status"
+                    class="filter-input"
+                    required>
+
+                <option value="">
+                    Select Status
+                </option>
+
+                @foreach (var status in ViewBag.NextStatuses)
+                {
+                    <option value="@status">
+                        @status
+                    </option>
+                }
+
             </select>
 
             <div class="ticket-buttons">
 
-                <button type="submit" class="ticket-button">
+                <button type="submit"
+                        class="ticket-button">
                     Save
                 </button>
 

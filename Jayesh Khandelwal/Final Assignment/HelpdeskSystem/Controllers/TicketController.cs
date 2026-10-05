@@ -10,11 +10,14 @@ namespace HelpdeskSystem.Controllers
     public class TicketController : Controller
     {
         private readonly ITicketService _ticketService;
+        private readonly ITicketWorkflowService _ticketWorkflowService;
 
-        public TicketController(ITicketService ticketService)
+        public TicketController(ITicketService ticketService, ITicketWorkflowService ticketWorkflowService)
         {
             _ticketService = ticketService;
+            _ticketWorkflowService = ticketWorkflowService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index(string? status, string? priority, string? assignee, bool overdue = false,string? search= null, string? sort = null, int page = 1, int pageSize =10)
         {
@@ -108,8 +111,80 @@ namespace HelpdeskSystem.Controllers
                 return NotFound();
             }
 
+            ViewBag.NextStatuses =
+                _ticketWorkflowService.GetNextStatuses(
+                    result.Value.Status);
+
+            return View(result.Value);
+        }
+        [HttpPost("/api/tickets/{id}/status")]
+        [Authorize(Roles = "CompanyAdmin,Agent")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Status(int id,TicketStatus status)
+        {
+            var result = await _ticketService.ChangeStatusAsync(id,status);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            return RedirectToAction("Details", new { id });
+        }
+        [HttpGet("/tickets/{id}/Comments")]
+        [Authorize]
+        public async Task<IActionResult> Comments(int id)
+        {
+            var result = await _ticketService.GetTicketByIdAsync(id);
+
+            if (result.IsFailure)
+                return NotFound();
+
+            var comments = await _ticketService.GetCommentsAsync(id);
+
+            ViewBag.Comments = comments;
+
             return View(result.Value);
         }
 
+        
+
+        [HttpPost("/api/tickets/{id}/comments")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(int id, string comment)
+        {
+            var result = await _ticketService.AddCommentAsync(id, comment);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = result.ErrorMessage
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message = "Comment added successfully."
+            });
+        }
+
+        [HttpGet("/tickets/{id}/History")]
+        [Authorize(Roles = "CompanyAdmin,Agent")]
+        public async Task<IActionResult> History(int id)
+        {
+            var result = await _ticketService.GetTicketByIdAsync(id);
+
+            if (result.IsFailure) { 
+                return NotFound();}
+
+            var history = await _ticketService.GetHistoryAsync(id);
+
+            ViewBag.History = history;
+
+            return View(result.Value);
+        }
     }
 }

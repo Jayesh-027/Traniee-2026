@@ -1,0 +1,55 @@
+﻿@using HelpdeskSystem.Models
+@model Ticket
+
+@{
+    ViewData["Title"] = "Ticket History";
+    var history = ViewBag.History as List<TicketHistory>;
+}
+
+<div class="ticket-card">
+
+    <div class="ticket-header">
+        <h2>Ticket History</h2>
+    </div>
+
+    <div class="ticket-info">
+        <h4>@Model.Title</h4>
+    </div>
+
+    @if (history == null || history.Count == 0)
+    {
+        <p>No history available.</p>
+    }
+    else
+    {
+        foreach (var item in history)
+        {
+            <div class="ticket-history-item">
+
+                <strong>@item.Action</strong>
+
+                <p>
+                    Old: @(item.OldValue ?? "-")
+                </p>
+
+                <p>
+                    New: @(item.NewValue ?? "-")
+                </p>
+
+                <small>
+                    @item.Timestamp.ToString("dd MMM yyyy, hh:mm tt")
+                </small>
+
+            </div>
+        }
+    }
+
+    <div class="ticket-buttons">
+
+        <a asp-controller="Ticket"asp-action="Details" asp-route-id="@Model.Id" class="ticket-button">
+            Back
+        </a>
+
+    </div>
+
+</div>

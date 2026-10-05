@@ -30,6 +30,8 @@ builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
+builder.Services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
 
 builder.Services.AddHttpContextAccessor();
 
