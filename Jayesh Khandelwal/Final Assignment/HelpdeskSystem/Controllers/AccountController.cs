@@ -28,16 +28,22 @@ namespace HelpdeskSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            var companies = await _companyRepository.GetAllAsync();
+            ViewBag.Companies = companies;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var result = await _authService.RegisterAsync(model);   
+
+            var result = await _authService.RegisterAsync(model);
+
             if (result.IsFailure)
             {
                 ModelState.AddModelError("", result.ErrorMessage);
                 return View(model);
             }
+
             return RedirectToAction("Login");
         }
 

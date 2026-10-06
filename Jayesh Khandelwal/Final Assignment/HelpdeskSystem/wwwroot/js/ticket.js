@@ -8,8 +8,7 @@ function addComment(ticketId) {
         return;
     }
 
-    const token =
-        $('input[name="__RequestVerificationToken"]').val();
+    const token = $('input[name="__RequestVerificationToken"]').val();
 
     $.ajax({
         url: "/api/tickets/" + ticketId + "/comments",
@@ -26,9 +25,7 @@ function addComment(ticketId) {
         success: function (response) {
 
             $("#commentText").val("");
-
             $("#commentMessage").text(response.message);
-
             location.reload();
         },
 
@@ -46,3 +43,4 @@ function addComment(ticketId) {
         }
     });
 }
+

@@ -48,29 +48,30 @@
 
             <hr />
 
-            <h5 class="mb-3">Add Comment</h5>
+            @if (Model.Status != TicketStatus.Closed)
+            {
+                <h5 class="mb-3">Add Comment</h5>
 
-            <input type="hidden"
-                   id="ticketId"
-                   value="@Model.Id" />
+                <input type="hidden" id="ticketId" value="@Model.Id" />
 
-            @Html.AntiForgeryToken()
+                @Html.AntiForgeryToken()
 
-            <textarea id="commentText"
-                      class="form-control mb-3"
-                      rows="4"
-                      placeholder="Write your comment"></textarea>
+                <textarea id="commentText"class="form-control mb-3" rows="4"placeholder="Write comment"></textarea>
 
-            <div id="commentMessage" class="mb-3"></div>
+                <div id="commentMessage" class="mb-3"></div>
 
-            <button type="button"
-                    class="ticket-button"
-                    onclick="addComment(@Model.Id)">
-                Save
-            </button>
+                <button type="button" class="ticket-button"  onclick="addComment(@Model.Id)">
+                    Save
+                </button>
+            }
+            else
+            {
+                <p class="text-muted">
+                    This ticket is closed. New comments cannot be added.
+                </p>
+            }
 
-            <a href="/Ticket/Details/@Model.Id"
-               class="ticket-button">
+            <a href="/Ticket/Details/@Model.Id"class="ticket-button">
                 Back
             </a>
 

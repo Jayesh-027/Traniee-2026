@@ -1,0 +1,53 @@
+﻿@model HelpdeskSystem.ViewModels.ManageUsersViewModel
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Users</h2>
+
+        <a asp-controller="User"asp-action="Create" class="ticket-button">
+            Create Agent
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Agents</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model.Agents.Count == 0)
+            {
+                <p class="text-muted">No agents found.</p>
+            }
+            else
+            {
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Id</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var agent in Model.Agents)
+                        {
+                            <tr>
+                                <td>@agent.Email</td>
+                                <td>@agent.Id</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
+
+</div>

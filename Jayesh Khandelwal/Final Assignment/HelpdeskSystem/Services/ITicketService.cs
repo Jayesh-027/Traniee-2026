@@ -15,5 +15,7 @@ namespace HelpdeskSystem.Services
         Task<Result<bool>> AddCommentAsync(int ticketId, string comment);
         Task<List<TicketComment>> GetCommentsAsync(int ticketId);
         Task<List<TicketHistory>> GetHistoryAsync(int ticketId);
+        Task<Result<bool>> DeleteTicketAsync(int id);
+        Task<DashboardViewModel> DashboardDataAsync();
     }
 }

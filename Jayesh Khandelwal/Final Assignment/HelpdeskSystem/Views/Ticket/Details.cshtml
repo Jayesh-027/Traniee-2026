@@ -52,11 +52,15 @@
         @if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
         {
             <div class="ticket-actions">
-
-                <a href="/tickets/@Model.Id/Assign" class="ticket-button"> Assign Ticket </a>
-
-                <a href="/tickets/@Model.Id/Status" class="ticket-button"> Update Status  </a>
-
+                @if (Model.Status != TicketStatus.Closed)
+                {
+                    <a asp-controller="Ticket" asp-action="Assign" asp-route-id="@Model.Id" class="ticket-button">
+                        Assign Ticket
+                    </a>
+                    <a asp-controller="Ticket" asp-action="Status" asp-route-id="@Model.Id" class="ticket-button">
+                        Update Status
+                    </a>
+                }
                 <a asp-controller="Ticket" asp-action="Comments" asp-route-id="@Model.Id" class="ticket-button">
                     Comments
                 </a>
@@ -68,10 +72,10 @@
             </div>
         }
         @if (User.IsInRole("Customer"))
-        {
+            {
             <div class="ticket-actions">
                             
-                <a asp-controller="Ticket" asp-action="Comments" asp-route="@Model.Id" class="ticket-button">
+                <a asp-controller="Ticket" asp-action="Comments" asp-route-id="@Model.Id" class="ticket-button">
                     Comments
                 </a>
 

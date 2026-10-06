@@ -115,7 +115,7 @@ namespace HelpdeskSystem.Data
                 entity.HasOne(n => n.Ticket)
                     .WithMany()
                     .HasForeignKey(n => n.TicketId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
             builder.Entity<Ticket>()
                 .HasQueryFilter(t => t.CompanyId == _currentUserService.GetCompanyId());

@@ -14,8 +14,9 @@ namespace HelpdeskSystem.Services
         private readonly ITicketWorkflowService _ticketWorkflowService;
         private readonly ITicketCommentRepository _ticketCommentRepository;
         private readonly ITicketHistoryRepository _ticketHistoryRepository;
+        private readonly INotificationService _notificationService;
 
-        public TicketService(ITicketRepository ticketRepository,ICurrentUserService currentUserService,IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ITicketWorkflowService ticketWorkflowService,ITicketCommentRepository ticketCommentRepository, ITicketHistoryRepository ticketHistoryRepository)
+        public TicketService(ITicketRepository ticketRepository,ICurrentUserService currentUserService,IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ITicketWorkflowService ticketWorkflowService,ITicketCommentRepository ticketCommentRepository, ITicketHistoryRepository ticketHistoryRepository, INotificationService notificationService)
         {
             _ticketRepository = ticketRepository;
             _currentUserService = currentUserService;
@@ -24,6 +25,7 @@ namespace HelpdeskSystem.Services
             _ticketWorkflowService = ticketWorkflowService;
             _ticketCommentRepository = ticketCommentRepository;
             _ticketHistoryRepository = ticketHistoryRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<List<Ticket>> GetTicketsAsync(string? status,string? priority,string? assignee,bool overdue,string? search,string? sort,int page,int pageSize)
@@ -36,11 +38,13 @@ namespace HelpdeskSystem.Services
             }
             return await _ticketRepository.GetAllAsync(status,priority,assignee, overdue,search,sort,page,pageSize);
         }
+
         public async Task<List<ApplicationUser>> GetAgentsAsync()
         {
             var companyId = _currentUserService.GetCompanyId();
             return await _userRepository.GetAgentsByCompanyIdAsync(companyId);
         }
+
 
         public async Task<bool> CreateTicketAsync(CreateTicketViewModel model)
         {
@@ -120,7 +124,7 @@ namespace HelpdeskSystem.Services
 
             if (!allowed)
             {
-                return Result<bool>.Failure("Invalid status transition.");
+                return Result<bool>.Failure("Invalid status transition");
             }
             var oldStatus = ticket.Status.ToString();
 
@@ -129,10 +133,11 @@ namespace HelpdeskSystem.Services
             var updated = await _ticketRepository.UpdateAsync(ticket);
             if (!updated)
             {
-                return Result<bool>.Failure("Unable to update ticket status.");
+                return Result<bool>.Failure("Unable to update ticket status");
             }
 
             await AddHistoryAsync(id,"Status Changed",oldStatus,newStatus.ToString());
+            await _notificationService.CreateAsync(ticket.CreatedByUserId,id,$"Ticket status changed to {newStatus}");
 
             return Result<bool>.Success(true);
         }
@@ -145,8 +150,11 @@ namespace HelpdeskSystem.Services
                 return Result<bool>.Failure("Ticket not found");
             }
             var companyId = _currentUserService.GetCompanyId();
+
             var agents = await _userRepository.GetAgentsByCompanyIdAsync(companyId);
+
             var agent = agents.FirstOrDefault(a => a.Id == agentId);
+
             if (agent == null)
             {
                 return Result<bool>.Failure("Invalid agent");
@@ -161,32 +169,37 @@ namespace HelpdeskSystem.Services
             var updated = await _ticketRepository.UpdateAsync(ticket);
             if (!updated)
             {
-                return Result<bool>.Failure("Unable to assign ticket.");
+                return Result<bool>.Failure("Unable to assign ticket");
             }
             await AddHistoryAsync(id,"Assigned",oldAgentId,agentId);
+            await _notificationService.CreateAsync(agentId,id,"Ticket is assigned");
             return Result<bool>.Success(true);
         }
+
+
         public async Task<Result<bool>> AddCommentAsync(int ticketId,string comment)
         {
             var ticket = await _ticketRepository.GetByIdAsync(ticketId);
             if (ticket == null)
             {
-                return Result<bool>.Failure("Ticket not found.");
+                return Result<bool>.Failure("Ticket not found");
             }
 
             if (string.IsNullOrWhiteSpace(comment))
             {
-                return Result<bool>.Failure("Comment cannot be empty.");
+                return Result<bool>.Failure("Comment cannot be empty");
             }
-
+            if (ticket.Status == TicketStatus.Closed)
+            {
+                return Result<bool>.Failure(
+                    "Comments cannot be added to a closed ticket.");
+            }
             var user = _httpContextAccessor.HttpContext?.User;
-            var userId = user?
-                .FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?
-                .Value;
+            var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
             {
-                return Result<bool>.Failure("User not found.");
+                return Result<bool>.Failure("User not found");
             }
 
             var companyId = _currentUserService.GetCompanyId();
@@ -210,46 +223,55 @@ namespace HelpdeskSystem.Services
 
                 if (!ticketUpdated)
                 {
-                    return Result<bool>.Failure(
-                        "Unable to update first response time.");
+                    return Result<bool>.Failure("Unable to update first response time");
                 }
             }
 
-            var result = await _ticketCommentRepository
-                .AddAsync(ticketComment);
+            var result = await _ticketCommentRepository.AddAsync(ticketComment);
 
             if (!result)
             {
-                return Result<bool>.Failure("Unable to add comment.");
+                return Result<bool>.Failure("Unable to add comment");
+            }
+            string? recipientId = null;
+
+            if (user.IsInRole("Customer"))
+            {
+                recipientId = ticket.AssignedToUserId;
+            }
+            else
+            {
+                recipientId = ticket.CreatedByUserId;
             }
 
+            if (recipientId != null && recipientId != userId)
+            {
+                await _notificationService.CreateAsync( recipientId,  ticketId, "New Comment on Ticket");
+            }
             return Result<bool>.Success(true);
         }
 
         public async Task<List<TicketComment>> GetCommentsAsync(int ticketId)
         {
-            return await _ticketCommentRepository
-                .GetByTicketIdAsync(ticketId);
+            return await _ticketCommentRepository.GetByTicketIdAsync(ticketId);
         }
         public async Task<List<TicketHistory>> GetHistoryAsync(int ticketId)
         {
-            return await _ticketHistoryRepository
-                .GetByTicketIdAsync(ticketId);
+            return await _ticketHistoryRepository .GetByTicketIdAsync(ticketId);
         }
         private async Task AddHistoryAsync(int ticketId, string action,string? oldValue,string? newValue)
         {
             var user = _httpContextAccessor.HttpContext?.User;
-            var userId = user?
-                .FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?
-                .Value;
+            var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
+            {
                 return;
+            }
 
             var companyId = _currentUserService.GetCompanyId();
 
-            var ipAddress =
-                _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            var ipAddress =_httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
 
             var history = new TicketHistory
             {
@@ -264,6 +286,54 @@ namespace HelpdeskSystem.Services
             };
 
             await _ticketHistoryRepository.AddAsync(history);
+        }
+        public async Task<Result<bool>> DeleteTicketAsync(int id)
+        {
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+
+            if (ticket == null)
+            {
+                return Result<bool>.Failure("Ticket not found.");
+            }
+
+            var deleted = await _ticketRepository.DeleteAsync(ticket);
+
+            if (!deleted)
+            {
+                return Result<bool>.Failure("Unable to delete ticket.");
+            }
+            return Result<bool>.Success(true);
+        }
+
+
+        public async Task<DashboardViewModel> DashboardDataAsync()
+        {
+            var tickets = await _ticketRepository.GetAllAsync(null,null,null,false,null, null,1,int.MaxValue);
+
+            var dashboard = new DashboardViewModel
+            {
+                TotalTickets = tickets.Count,
+
+                NewTickets = tickets.Count(t => t.Status == TicketStatus.New),
+                AssignedTickets = tickets.Count(t => t.Status == TicketStatus.Assigned),
+                InProgressTickets = tickets.Count(t => t.Status == TicketStatus.InProgress),
+                ResolvedTickets = tickets.Count(t => t.Status == TicketStatus.Resolved),
+                ClosedTickets = tickets.Count(t => t.Status == TicketStatus.Closed),
+
+                HighPriorityTickets = tickets.Count(t => t.Priority == TicketPriority.High),
+                MediumPriorityTickets = tickets.Count(t => t.Priority == TicketPriority.Medium),
+                LowPriorityTickets = tickets.Count(t => t.Priority == TicketPriority.Low),
+
+                OverdueTickets = tickets.Count(t =>
+                    (!t.FirstRespondedAt.HasValue &&
+                     t.FirstResponseDue < DateTime.Now)||
+                    (t.Status != TicketStatus.Resolved &&
+                     t.Status != TicketStatus.Closed &&
+                     t.ResolutionDue < DateTime.Now)
+                )
+            };
+
+            return dashboard;
         }
 
     }

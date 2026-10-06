@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 
 namespace HelpdeskSystem.Controllers
 {
+    [Authorize]
     public class TicketController : Controller
     {
         private readonly ITicketService _ticketService;
@@ -75,6 +76,21 @@ namespace HelpdeskSystem.Controllers
             return View(result.Value);  
         }
 
+        [HttpPost("/tickets/{id}/delete")]
+        [Authorize(Roles = "CompanyAdmin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _ticketService.DeleteTicketAsync(id);
+
+            if (result.IsFailure)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet("/tickets/{id}/Assign")]
         [Authorize(Roles = "CompanyAdmin,Agent")]
         public async Task<IActionResult> Assign(int id)
@@ -91,7 +107,7 @@ namespace HelpdeskSystem.Controllers
         [HttpPost("/api/tickets/{id}/assign")]
         [Authorize(Roles = "CompanyAdmin,Agent")]
      
-        public async Task<IActionResult> Assign(int id, string agentId)
+        public async Task<IActionResult> UpdateAssign(int id, string agentId)
         {
             var result = await _ticketService.AssignTicketAsync(id, agentId);
             if (result.IsFailure)
@@ -117,10 +133,11 @@ namespace HelpdeskSystem.Controllers
 
             return View(result.Value);
         }
+
         [HttpPost("/api/tickets/{id}/status")]
         [Authorize(Roles = "CompanyAdmin,Agent")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Status(int id,TicketStatus status)
+        public async Task<IActionResult> UpdateStatus(int id,TicketStatus status)
         {
             var result = await _ticketService.ChangeStatusAsync(id,status);
             if (result.IsFailure)
@@ -130,6 +147,7 @@ namespace HelpdeskSystem.Controllers
 
             return RedirectToAction("Details", new { id });
         }
+
         [HttpGet("/tickets/{id}/Comments")]
         [Authorize]
         public async Task<IActionResult> Comments(int id)

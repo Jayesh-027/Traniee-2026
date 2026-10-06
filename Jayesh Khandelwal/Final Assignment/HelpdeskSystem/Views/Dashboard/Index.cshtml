@@ -1,0 +1,79 @@
+﻿@model HelpdeskSystem.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-page">
+
+    <h2>Dashboard</h2>
+    
+    <div class="dashboard-row">
+
+        <div class="dashboard-card">
+            <h4>Total Tickets</h4>
+            <h2>@Model.TotalTickets</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>Overdue Tickets</h4>
+            <h2>@Model.OverdueTickets</h2>
+        </div>
+
+    </div>
+
+    
+    <h3>Tickets by Status</h3>
+
+    <div class="dashboard-row">
+
+        <div class="dashboard-card">
+            <h4>New</h4>
+            <h2>@Model.NewTickets</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>Assigned</h4>
+            <h2>@Model.AssignedTickets</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>In Progress</h4>
+            <h2>@Model.InProgressTickets</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>Resolved</h4>
+            <h2>@Model.ResolvedTickets</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>Closed</h4>
+            <h2>@Model.ClosedTickets</h2>
+        </div>
+
+    </div>
+
+    
+    <h3>Tickets by Priority</h3>
+
+    <div class="dashboard-row">
+
+        <div class="dashboard-card">
+            <h4>High</h4>
+            <h2>@Model.HighPriorityTickets</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>Medium</h4>
+            <h2>@Model.MediumPriorityTickets</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>Low</h4>
+            <h2>@Model.LowPriorityTickets</h2>
+        </div>
+
+    </div>
+
+</div>

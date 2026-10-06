@@ -59,13 +59,13 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="ManagerUsers" asp-action="">
+                                    <a class="nav-link" asp-controller="User" asp-action="ManageUser">
                                         Manage Users
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Dashboard" asp-action="Create">
+                                    <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
                                         Dashboard
                                     </a>
                                 </li>
@@ -86,11 +86,6 @@
                                     </a>
                                 </li>
 
-                                <li class="nav-item">
-                                    <a class="nav-link" >
-                                        Dashboard
-                                    </a>
-                                </li>
                             }
                             else if (User.IsInRole("Customer"))
                             {
@@ -112,16 +107,33 @@
                             }
                         }
 
-                    </ul>
+                    </ul>   
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
+                        <div class="notification-area">
+
+                            <a href="#" id="notificationBell"  class="notification-link" title="Notifications">
+                                <img src="~/images/notification-bell.png" alt="Notifications" class="notification-icon">
+                                <span id="notificationCount" class="notification-count">
+                                    0
+                                </span>
+                            </a>
+                            <div id="notificationPanel" class="notification-panel">
+                                <div class="notification-header">
+                                    Notifications
+                                </div>
+
+                                <div id="notificationList" class="notification-list">
+                                    <div class="no-notifications">
+                                        No new notifications
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                         <form asp-controller="Account"asp-action="Logout" method="post">
-
-                            <button type="submit" class="btn">
-                                Logout
-                            </button>
-
-                        </form>
+                            <button type="submit" class="btn">Logout </button>
+                        </form>                      
                     }
                     else
                     {
@@ -150,6 +162,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/ticket.js"></script>
+    <script src="~/js/notification.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 

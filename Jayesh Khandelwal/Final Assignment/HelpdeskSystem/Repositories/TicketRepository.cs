@@ -68,5 +68,11 @@ namespace HelpdeskSystem.Repositories
             _context.Tickets.Update(ticket);
             return await _context.SaveChangesAsync()>0;
         }
+        public async Task<bool> DeleteAsync(Ticket ticket)
+        {
+            _context.Tickets.Remove(ticket);
+
+                return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

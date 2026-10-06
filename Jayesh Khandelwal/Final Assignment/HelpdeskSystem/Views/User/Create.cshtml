@@ -1,0 +1,41 @@
+﻿@model HelpdeskSystem.ViewModels.CreateAgentViewModel
+
+@{
+    ViewData["Title"] = "Create Agent";
+}
+
+<div class="create-user-container">
+
+    <div class="create-user-header">
+        <h2>Create Agent</h2>
+        <p>Create a new agent for your company</p>
+    </div>
+
+    <form asp-action="Create" method="post" class="create-user-form">
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-group">
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" type="email" placeholder="Enter agent email" />
+            <span asp-validation-for="Email" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Password</label>
+            <input asp-for="Password"type="password" placeholder="Enter password" />
+            <span asp-validation-for="Password" class="validation-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="create-btn">
+                Create Agent
+            </button>
+
+            <a asp-action="ManageUser" class="cancel-btn">
+                Cancel
+            </a>
+        </div>
+    </form>
+
+</div>

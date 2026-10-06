@@ -95,7 +95,7 @@
                           ticket.Status != TicketStatus.Closed &&
                           ticket.ResolutionDue < DateTime.Now))
                     {
-                        <span class="ticket-overdue-badge">
+                        <span class="ticket-overdue">
                             Overdue
                         </span>
                     }
@@ -109,7 +109,7 @@
                         </a>
                         @if (User.IsInRole("CompanyAdmin"))
                         {
-                            <form asp-action="Delete"asp-route-id="@ticket.Id" method="post">
+                            <form asp-controller="Ticket" asp-action="Delete"asp-route-id="@ticket.Id" method="post">
                                 <button type="submit" class="ticket-button">
                                     Delete
                                 </button>

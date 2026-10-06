@@ -225,7 +225,7 @@ button:focus {
     border-color: #333;
     box-shadow: 0 0 0 1px #333;
 }
-.ticket-overdue-badge {
+.ticket-overdue {
     display: inline-block;
     background-color: #dc3545;
     color: white;
@@ -234,4 +234,189 @@ button:focus {
     font-size: 12px;
     font-weight: bold;
     margin-bottom: 10px;
+}
+.notification-area {
+    position: relative;
+    margin-right: 15px;
+}
+
+.notification-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.notification-icon {
+    width: 30px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -7px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 2px 5px;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    font-size: 11px;
+    text-align: center;
+    line-height: 14px;
+}
+
+.notification-panel {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    width: 320px;
+    background-color: white;
+    border: 1px solid #222;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.notification-header {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
+
+.notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+    .notification-item:hover {
+        background-color: #f5f5f5;
+    }
+
+.notification-time {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    color: #777;
+}
+
+.no-notifications {
+    padding: 15px;
+    text-align: center;
+    color: #777;
+}
+.dashboard-page {
+    padding: 30px;
+}
+
+    .dashboard-page h2 {
+        margin-bottom: 25px;
+    }
+
+    .dashboard-page h3 {
+        margin-top: 35px;
+        margin-bottom: 15px;
+    }
+
+.dashboard-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.dashboard-card {
+    border: 1px solid #000;
+    padding: 20px;
+    width: 180px;
+    background: white;
+}
+
+    .dashboard-card h4 {
+        margin-bottom: 10px;
+    }
+
+    .dashboard-card h2 {
+        margin: 0;
+    }
+
+.create-user-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.create-user-header {
+    margin-bottom: 25px;
+}
+
+    .create-user-header h2 {
+        margin-bottom: 5px;
+    }
+
+    .create-user-header p {
+        color: #777;
+    }
+
+.create-user-form .form-group {
+    margin-bottom: 20px;
+}
+
+.create-user-form label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+}
+
+.create-user-form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+    .create-user-form input:focus {
+        outline: none;
+        border-color: #555;
+    }
+
+.validation-error,
+.validation-summary {
+    color: #d33;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.create-btn,
+.cancel-btn {
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.create-btn {
+    background: #333;
+    color: white;
+}
+
+.cancel-btn {
+    background: #eee;
+    color: #333;
 }
