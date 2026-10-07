@@ -5,7 +5,7 @@
 namespace HelpdeskSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateNotification : Migration
+    public partial class Mg2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,6 +13,14 @@ namespace HelpdeskSystem.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Notifications_Tickets_TicketId",
                 table: "Notifications");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "TicketId",
+                table: "Notifications",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Notifications_Tickets_TicketId",
@@ -29,6 +37,16 @@ namespace HelpdeskSystem.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Notifications_Tickets_TicketId",
                 table: "Notifications");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "TicketId",
+                table: "Notifications",
+                type: "int",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Notifications_Tickets_TicketId",

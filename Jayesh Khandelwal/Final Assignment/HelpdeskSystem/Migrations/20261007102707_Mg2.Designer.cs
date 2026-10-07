@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HelpdeskSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261006113630_UpdateNotification")]
-    partial class UpdateNotification
+    [Migration("20261007102707_Mg2")]
+    partial class Mg2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
