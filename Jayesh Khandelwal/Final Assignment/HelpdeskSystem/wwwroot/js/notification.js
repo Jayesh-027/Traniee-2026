@@ -5,14 +5,10 @@
         type: "GET",
 
         success: function (notifications) {
-
             $("#notificationCount").text(notifications.length);
-
             showNotifications(notifications);
         },
-
         error: function () {
-
             $("#notificationCount").text("0");
         }
     });
