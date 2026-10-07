@@ -2,6 +2,7 @@
 using HelpdeskSystem.Models;
 using HelpdeskSystem.Repositories;
 using HelpdeskSystem.ViewModels;
+using Microsoft.VisualBasic;
 
 namespace HelpdeskSystem.Services
 {
@@ -113,7 +114,46 @@ namespace HelpdeskSystem.Services
             return Result<Ticket>.Success(ticket);
         }
 
-        public async Task<Result<bool>> ChangeStatusAsync(int id, TicketStatus newStatus)
+        public async Task<Result<bool>> EditTicketAsync(int id, EditTicketViewModel model)
+        {
+            var ticket = await _ticketRepository.GetByIdAsync(id);
+            if (ticket == null)
+            {
+                return Result<bool>.Failure("Ticket not found.");
+            }
+            if (ticket.AssignedToUserId != null)
+            {
+                return Result<bool>.Failure("Assigned tickets cannot be edited.");
+            }
+
+            if (ticket.Status == TicketStatus.Closed)
+            {
+                return Result<bool>.Failure("Closed tickets cannot be edited.");
+            }
+            if (!ticket.RowVersion.SequenceEqual(model.RowVersion))
+            {
+                return Result<bool>.Failure(
+                    "This ticket was modified by another user. Please refresh the page and try again."
+                );
+            }
+            ticket.Title = model.Title;
+            ticket.Description = model.Description;
+            ticket.Priority = model.Priority;
+            ticket.UpdatedAt = DateTime.Now;
+            ticket.RowVersion = model.RowVersion;
+
+            var updated = await _ticketRepository.UpdateAsync(ticket);
+
+            if (!updated)
+            {
+                return Result<bool>.Failure("Unable to update ticket.");
+            }
+
+            await AddHistoryAsync(id, "Ticket Edited", null,ticket.Title);
+
+            return Result<bool>.Success(true);
+        }
+        public async Task<Result<bool>> ChangeStatusAsync(int id, TicketStatus newStatus, byte[] rowVersion)
         {
             var ticket = await _ticketRepository.GetByIdAsync(id);
             if(ticket == null)
@@ -121,7 +161,11 @@ namespace HelpdeskSystem.Services
                 return Result<bool>.Failure("Ticket not found");
             }
             var allowed = _ticketWorkflowService.CanChangeStatus(ticket.Status,newStatus);
-
+            if (!ticket.RowVersion.SequenceEqual(rowVersion))
+            {
+                return Result<bool>.Failure("Status was modified Refresh page"
+                );
+            }
             if (!allowed)
             {
                 return Result<bool>.Failure("Invalid status transition");

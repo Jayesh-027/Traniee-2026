@@ -21,13 +21,13 @@ namespace HelpdeskSystem.Controllers
             return View(dashboard);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet("/api/dashboard")]
+        [Authorize(Roles = "CompanyAdmin")]
+        public async Task<IActionResult> GetDashboard()
         {
-            return View(new ErrorViewModel
-            {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            });
+            var dashboard = await _ticketService.DashboardDataAsync();
+
+            return Ok(dashboard);
         }
     }
 }

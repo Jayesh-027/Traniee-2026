@@ -50,6 +50,11 @@ namespace HelpdeskSystem.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Ticket");
+            }
+
             return View();
         }
 

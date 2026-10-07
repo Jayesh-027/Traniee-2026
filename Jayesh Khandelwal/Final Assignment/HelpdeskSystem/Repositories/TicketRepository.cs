@@ -65,8 +65,15 @@ namespace HelpdeskSystem.Repositories
 
         public async Task<bool> UpdateAsync(Ticket ticket)
         {
-            _context.Tickets.Update(ticket);
-            return await _context.SaveChangesAsync()>0;
+            try
+            {
+                _context.Tickets.Update(ticket);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
         }
         public async Task<bool> DeleteAsync(Ticket ticket)
         {

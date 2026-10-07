@@ -1,0 +1,37 @@
+﻿@model HelpdeskSystem.ViewModels.EditTicketViewModel
+
+<h2 class="assign-title">Edit Ticket</h2>
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="assign-ticket">
+
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label>Title</label>
+        <input asp-for="Title" />
+        <span asp-validation-for="Title"></span>
+    </div>
+
+    <div>
+        <label>Description</label>
+        <textarea asp-for="Description"></textarea>
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <div>
+        <label>Priority</label>
+        <select asp-for="Priority"  asp-items="Html.GetEnumSelectList<HelpdeskSystem.Models.TicketPriority>()">
+        </select>
+        <span asp-validation-for="Priority"></span>
+    </div>
+
+    <input type="hidden" asp-for="RowVersion" />
+
+    <button type="submit">Save</button>
+
+    <a asp-action="Index">
+        Cancel
+    </a>
+
+</form>

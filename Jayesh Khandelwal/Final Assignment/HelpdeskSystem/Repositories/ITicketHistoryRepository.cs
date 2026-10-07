@@ -6,5 +6,6 @@ namespace HelpdeskSystem.Repositories
     {
         Task<bool> AddAsync(TicketHistory history);
         Task<List<TicketHistory>> GetByTicketIdAsync(int ticketId);
+        
     }
 }

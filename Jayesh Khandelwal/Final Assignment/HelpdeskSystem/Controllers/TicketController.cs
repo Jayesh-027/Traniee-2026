@@ -137,9 +137,9 @@ namespace HelpdeskSystem.Controllers
         [HttpPost("/api/tickets/{id}/status")]
         [Authorize(Roles = "CompanyAdmin,Agent")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(int id,TicketStatus status)
+        public async Task<IActionResult> UpdateStatus(int id,TicketStatus status, byte[] rowVersion)
         {
-            var result = await _ticketService.ChangeStatusAsync(id,status);
+            var result = await _ticketService.ChangeStatusAsync(id,status,rowVersion);
             if (result.IsFailure)
             {
                 return BadRequest(result.ErrorMessage);
@@ -203,6 +203,57 @@ namespace HelpdeskSystem.Controllers
             ViewBag.History = history;
 
             return View(result.Value);
+        }
+        [HttpGet("/tickets/{id}/Edit")]
+        [Authorize]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var result = await _ticketService.GetTicketByIdAsync(id);
+
+            if (result.IsFailure)
+            {
+                return NotFound();
+            }
+
+            var ticket = result.Value;
+
+            if (ticket.AssignedToUserId != null ||
+                ticket.Status == TicketStatus.Closed)
+            {
+                return BadRequest("This ticket cannot be edited.");
+            }
+
+            var model = new EditTicketViewModel
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Description = ticket.Description,
+                Priority = ticket.Priority,
+                RowVersion = ticket.RowVersion
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("/tickets/{id}/Edit")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id,EditTicketViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await _ticketService.EditTicketAsync(id, model);
+
+            if (result.IsFailure)
+            {
+                ModelState.AddModelError("", result.ErrorMessage);
+                return View(model);
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

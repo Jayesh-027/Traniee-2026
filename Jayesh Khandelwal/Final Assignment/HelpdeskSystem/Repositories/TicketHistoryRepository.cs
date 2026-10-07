@@ -24,6 +24,7 @@ namespace HelpdeskSystem.Repositories
                 .Where(h => h.TicketId == ticketId)
                 .OrderByDescending(h => h.Timestamp)
                 .ToListAsync();
-        } 
+        }
+        
     }
 }
