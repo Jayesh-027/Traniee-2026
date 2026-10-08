@@ -38,13 +38,14 @@ namespace HelpdeskSystem.Controllers
 
             var result = await _authService.RegisterAsync(model);
 
+
             if (result.IsFailure)
             {
                 ModelState.AddModelError("", result.ErrorMessage);
                 return View(model);
             }
 
-            return RedirectToAction("Login");
+            return RedirectToAction("Index", "Ticket");
         }
 
         [HttpGet]

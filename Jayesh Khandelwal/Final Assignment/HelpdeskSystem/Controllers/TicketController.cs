@@ -20,7 +20,8 @@ namespace HelpdeskSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? status, string? priority, string? assignee, bool overdue = false,string? search= null, string? sort = null, int page = 1, int pageSize =10)
+        public async Task<IActionResult> Index(string? status, string? priority, string? assignee, bool overdue = false,string? search= null,
+                                                string? sort = null, int page = 1, int pageSize =10)
         {
             var tickets = await _ticketService.GetTicketsAsync(status,priority,assignee,overdue,search, sort,page, pageSize);
             if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
@@ -39,11 +40,21 @@ namespace HelpdeskSystem.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Search(string? status,string? priority,string? assignee,bool overdue = false, string? search = null,
+                                                string? sort = null,int page = 1,int pageSize = 10)
+        {
+            var tickets = await _ticketService.GetTicketsAsync(status,priority,assignee,overdue,search,sort,page,pageSize);
+            ViewBag.Page = page;
+            return PartialView("_TicketList", tickets);
+        }
+
+
+        [HttpGet]
         public IActionResult CreateTicket()
         {
             return View();
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTicket(CreateTicketViewModel model)

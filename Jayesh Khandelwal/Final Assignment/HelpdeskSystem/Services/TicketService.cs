@@ -35,7 +35,8 @@ namespace HelpdeskSystem.Services
             if (user.IsInRole("Customer"))
             {
                 var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-                return await _ticketRepository.GetByUserIdAsync(userId);
+
+                return await _ticketRepository.GetAllAsync(status,priority,assignee,overdue,search,sort, page,pageSize,userId);
             }
             return await _ticketRepository.GetAllAsync(status,priority,assignee, overdue,search,sort,page,pageSize);
         }

@@ -13,9 +13,11 @@ namespace HelpdeskSystem.Repositories
             _context = context;
         }
 
-        public async Task<List<Ticket>> GetAllAsync( string? status,string? priority,string? assignee,bool overdue, string? search,string? sort,int page,int pageSize)
+        public async Task<List<Ticket>> GetAllAsync( string? status,string? priority,string? assignee,bool overdue, string? search,string? sort,int page,int pageSize,string userId)
         {
             var tickets = _context.Tickets.AsQueryable();
+            if (userId != null)
+                tickets = tickets.Where(t => t.CreatedByUserId == userId);
             if (status != null)
                 tickets = tickets.Where(t => t.Status.ToString() == status);
             if (priority != null)
@@ -40,13 +42,6 @@ namespace HelpdeskSystem.Repositories
             return await tickets
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
-        }
-
-        public async Task<List<Ticket>> GetByUserIdAsync(string userId)
-        {
-            return await _context.Tickets
-                .Where(t => t.CreatedByUserId == userId)
                 .ToListAsync();
         }
 

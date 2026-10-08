@@ -1,4 +1,5 @@
-﻿using HelpdeskSystem.Models;
+﻿using HelpdeskSystem.Helpers;
+using HelpdeskSystem.Models;
 using HelpdeskSystem.Repositories;
 using System.Security.Claims;
 
@@ -20,7 +21,7 @@ namespace HelpdeskSystem.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> CreateAsync( string userId,int ticketId, string message)
+        public async Task <Result<bool>> CreateAsync( string userId,int ticketId, string message)
         {
             var companyId = _currentUserService.GetCompanyId();
             var notification = new Notification
@@ -33,33 +34,48 @@ namespace HelpdeskSystem.Services
                 CreatedAt = DateTime.Now
             };
 
-            return await _notificationRepository.AddAsync(notification);
+            var result = await _notificationRepository.AddAsync(notification);
+
+            if (!result)
+            {
+                return Result<bool>.Failure("Unable to create notification");
+            }
+
+            return Result<bool>.Success(true);
         }
 
-        public async Task<List<Notification>> GetUnreadAsync()
+        public async Task<Result<List<Notification>>> GetUnreadAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
-                return new List<Notification>();
+            {
+                return Result<List<Notification>>.Failure("User not found");
+            }
+
 
             var companyId = _currentUserService.GetCompanyId();
 
-            return await _notificationRepository .GetUnreadAsync(userId, companyId);
+            var notifications = await _notificationRepository.GetUnreadAsync(userId, companyId);
+
+            return Result<List<Notification>>.Success(notifications);
         }
 
-        public async Task<bool> MarkAsReadAsync(int id)
+        public async Task<Result<bool>> MarkAsReadAsync(int id)
         {
-            var userId = _httpContextAccessor.HttpContext?.User
-                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
-                return false;
-
+            {
+                return Result<bool>.Failure("User not found");
+            }
             var companyId = _currentUserService.GetCompanyId();
 
-            return await _notificationRepository
-                .MarkAsReadAsync(id, userId, companyId);
+            var result = await _notificationRepository.MarkAsReadAsync(id, userId, companyId);
+            if (!result)
+            {
+                return Result<bool>.Failure("Unable to mark");
+            }
+            return Result<bool>.Success(true);
         }
     }
 }

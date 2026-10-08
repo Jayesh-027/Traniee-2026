@@ -42,6 +42,13 @@ namespace HelpdeskSystem.Services
             {
                 return Result<bool>.Failure("Unable to assign Customer role");
             }
+
+            var claims = new List<Claim>
+            {
+                new Claim("CompanyId", user.CompanyId.ToString())
+            };
+
+            await _signInManager.SignInWithClaimsAsync(user, false, claims);
             return Result<bool>.Success(true);
         }
 

@@ -1,13 +1,13 @@
 ﻿using HelpdeskSystem.Models;
-
+using HelpdeskSystem.Helpers;
 namespace HelpdeskSystem.Services
 {
     public interface INotificationService
     {
-        Task<bool> CreateAsync( string userId, int ticketId,  string message);
+        Task<Result<bool>> CreateAsync( string userId, int ticketId,  string message);
 
-        Task<List<Notification>> GetUnreadAsync();
+        Task<Result<List<Notification>>> GetUnreadAsync();
 
-        Task<bool> MarkAsReadAsync(int id);
+        Task<Result<bool>> MarkAsReadAsync(int id);
     }
 }

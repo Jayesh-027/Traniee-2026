@@ -28,19 +28,21 @@
                       rows="5"></textarea>
             <span asp-validation-for="Description"></span>
         </div>
+        @if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
+            {
+                <div class="form-group">
+                    <label asp-for="Priority"></label>
 
-        <div class="form-group">
-            <label asp-for="Priority"></label>
+                    <select asp-for="Priority" class="form-control">
+                        <option value="">Select Priority</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
 
-            <select asp-for="Priority" class="form-control">
-                <option value="">Select Priority</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-            </select>
-
-            <span asp-validation-for="Priority"></span>
-        </div>
+                    <span asp-validation-for="Priority"></span>
+                </div>
+            }
 
         <button type="submit" class="ticket-button">
             Create Ticket
@@ -54,6 +56,3 @@
 
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

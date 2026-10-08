@@ -11,7 +11,7 @@
         <p>All the Tickets</p>
     </div>
 
-    <form asp-action="Index" method="get" class="ticket-filters">
+    <form asp-action="Index" method="get" class="ticket-filters" id="ticketFilter">
 
         <select name="status" class="filter-input">
             <option value="">All Status</option>
@@ -33,132 +33,33 @@
                 }
             </select>
         }
-        <select name="priority" class="filter-input">
-            <option value="">All Priority</option>
-            <option value="High" selected="@(ViewBag.Priority == "High")">High</option>
-            <option value="Medium" selected="@(ViewBag.Priority == "Medium")">Medium</option>
-            <option value="Low" selected="@(ViewBag.Priority == "Low")">Low</option>
-        </select>
-
+        
         <input type="text" name="search" class="filter-input"placeholder="Search..." value="@ViewBag.Search" />
 
         <select name="sort" class="filter-input">
             <option value="">Newest</option>
             <option value="oldest" selected="@(ViewBag.Sort == "oldest")">Oldest</option>
         </select>
+        @if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
 
-        <label class="overdue-option">
-            <input type="checkbox"
-                   name="overdue"
-                   value="true"
-                   checked="@(ViewBag.Overdue)" />
-            Overdue
-        </label>
+        {
+            <select name="priority" class="filter-input">
+                <option value="">All Priority</option>
+                <option value="High" selected="@(ViewBag.Priority == "High")">High</option>
+                <option value="Medium" selected="@(ViewBag.Priority == "Medium")">Medium</option>
+                <option value="Low" selected="@(ViewBag.Priority == "Low")">Low</option>
+            </select>
 
-        <button type="submit" class="filter-button">
-            Filter
-        </button>
+            <label class="overdue-option">
+                <input type="checkbox" name="overdue" value="true" checked="@(ViewBag.Overdue)" />
+                Overdue
+            </label>
+        }
+
 
     </form>
 
-    @if (Model.Count == 0)
-    {
-        <div class="no-tickets">
-            No tickets found.
-        </div>
-    }
-    else
-    {
-        <div class="ticket-grid">
-
-            @foreach (var ticket in Model)
-            {
-                <div class="ticket-card">
-
-                    <h3>@ticket.Title</h3>
-
-                    <p class="ticket-description">
-                        @ticket.Description
-                    </p>
-
-                    <p>
-                        <strong>Priority:</strong>
-                        @ticket.Priority
-                    </p>
-
-                    <p>
-                        <strong>Status:</strong>
-                        @ticket.Status
-                    </p>
-                    @if ((!ticket.FirstRespondedAt.HasValue &&  ticket.FirstResponseDue < DateTime.Now) ||
-                         (ticket.Status != TicketStatus.Resolved &&
-                          ticket.Status != TicketStatus.Closed &&
-                          ticket.ResolutionDue < DateTime.Now))
-                    {
-                        <span class="ticket-overdue">
-                            Overdue
-                        </span>
-                    }
-                    <p>
-                        <strong>Created:</strong>
-                        @ticket.CreatedAt.ToString("dd-MM-yyyy")
-                    </p>
-                    <div class="ticket-buttons">
-                        <a asp-controller="Ticket" asp-action="Details" asp-route-id="@ticket.Id" class="ticket-button">
-                            Details
-                        </a>
-
-                        @if (ticket.AssignedToUserId == null && ticket.Status != TicketStatus.Closed)
-                        {
-                            <a asp-controller="Ticket" asp-action="Edit"asp-route-id="@ticket.Id" class="ticket-button">
-                                Edit
-                            </a>
-                        }
-
-                        @if (User.IsInRole("CompanyAdmin"))
-                        {
-                            <form asp-controller="Ticket" asp-action="Delete"asp-route-id="@ticket.Id" method="post">
-                                <button type="submit" class="ticket-button">
-                                    Delete
-                                </button>
-                            </form>
-                        }
-                    </div>
-                </div>
-            }
-       </div>
-        <div class="pagination">
-
-            @if (ViewBag.Page > 1)
-            {
-                <a asp-action="Index"
-                   asp-route-page="@(ViewBag.Page - 1)"
-                   asp-route-status="@ViewBag.Status"
-                   asp-route-priority="@ViewBag.Priority"
-                   asp-route-search="@ViewBag.Search"
-                   asp-route-sort="@ViewBag.Sort"
-                   asp-route-overdue="@ViewBag.Overdue"
-                   class="ticket-button">
-                    Previous
-                </a>
-            }
-
-            <span>Page @ViewBag.Page</span>
-
-            @if (Model.Count == 10)
-            {
-                <a asp-action="Index"
-                   asp-route-page="@(ViewBag.Page + 1)"
-                   asp-route-status="@ViewBag.Status"
-                   asp-route-priority="@ViewBag.Priority"
-                   asp-route-search="@ViewBag.Search"
-                   asp-route-sort="@ViewBag.Sort"
-                   asp-route-overdue="@ViewBag.Overdue"
-                   class="ticket-button">
-                    Next
-                </a>
-            }
-
-        </div>
-    }
+    <div id="ticket-list">
+    @await Html.PartialAsync("_TicketList", Model)
+</div>
 </div>

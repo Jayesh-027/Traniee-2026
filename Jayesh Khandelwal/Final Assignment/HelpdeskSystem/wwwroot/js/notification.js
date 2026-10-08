@@ -88,5 +88,5 @@ $(document).ready(function () {
 
         loadNotifications();
 
-    }, 30000);
+    }, 10000);
 });

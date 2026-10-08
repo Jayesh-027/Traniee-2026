@@ -20,7 +20,12 @@ namespace HelpdeskSystem.Controllers
         {
             var notifications = await _notificationService.GetUnreadAsync();
 
-            var result = notifications.Select(n => new
+            if (notifications.IsFailure)
+            {
+                return BadRequest(notifications.ErrorMessage);
+            }
+
+            var result = notifications.Value.Select(n => new
             {
                 id = n.Id,
                 message = n.Message,
@@ -36,9 +41,9 @@ namespace HelpdeskSystem.Controllers
         {
             var result = await _notificationService.MarkAsReadAsync(id);
 
-            if (!result)
+            if (result.IsFailure)
             {
-                return NotFound();
+                return NotFound(result.ErrorMessage);
             }
 
             return Ok(new

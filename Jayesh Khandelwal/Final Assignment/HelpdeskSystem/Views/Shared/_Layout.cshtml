@@ -18,11 +18,24 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
 
             <div class="container-fluid">
-
-                <a class="navbar-brand"  asp-area="" asp-controller="Dashboard" asp-action="Index">
+                @if (User.IsInRole("CompanyAdmin"))
+                    {
+                        <a class="navbar-brand"  asp-area="" asp-controller="Dashboard" asp-action="Index">
                     HelpdeskSystem
                 </a>
-
+                }
+                @if (User.IsInRole("Agent"))
+                    {
+                        <a class="navbar-brand"  asp-area="" asp-controller="Ticket" asp-action="Index">
+                    HelpdeskSystem
+                </a>
+                }
+                @if (User.IsInRole("Customer"))
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Ticket" asp-action="Index">
+                        HelpdeskSystem
+                    </a>
+                }
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
