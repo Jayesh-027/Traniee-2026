@@ -77,5 +77,18 @@ namespace HelpdeskSystem.Services
             }
             return Result<bool>.Success(true);
         }
+
+        public async Task<Result<List<Notification>>> GetAllNotificationById()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if(userId == null)
+            {
+                return Result<List<Notification>>.Failure("User not found");
+            }
+            var notification = await _notificationRepository.GetAllAsync(userId);
+
+            return Result<List<Notification>>.Success(notification);
+        }
     }
 }

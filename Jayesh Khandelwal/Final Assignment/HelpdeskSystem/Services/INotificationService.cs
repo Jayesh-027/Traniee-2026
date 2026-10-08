@@ -9,5 +9,6 @@ namespace HelpdeskSystem.Services
         Task<Result<List<Notification>>> GetUnreadAsync();
 
         Task<Result<bool>> MarkAsReadAsync(int id);
+        Task<Result<List<Notification>>> GetAllNotificationById();
     }
 }

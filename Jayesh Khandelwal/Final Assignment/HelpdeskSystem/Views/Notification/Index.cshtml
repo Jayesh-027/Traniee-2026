@@ -1,0 +1,50 @@
+﻿<div class="notification-history-page">
+
+    <h2>Notification History</h2>
+
+    @if (Model.Count == 0)
+    {
+        <div class="notification-history-empty">
+            No notifications found.
+        </div>
+    }
+    else
+    {
+        <div class="notification-history-list">
+
+            @foreach (var notification in Model)
+            {
+                <div class="notification-history-item">
+
+                    <div class="notification-history-content">
+
+                        <strong>
+                            @notification.Message
+                        </strong>
+
+                        <small>
+                            @notification.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                        </small>
+
+                    </div>
+
+                    @if (notification.IsRead)
+                    {
+                        <span class="notification-history-status read">
+                            Read
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="notification-history-status unread">
+                            Unread
+                        </span>
+                    }
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>

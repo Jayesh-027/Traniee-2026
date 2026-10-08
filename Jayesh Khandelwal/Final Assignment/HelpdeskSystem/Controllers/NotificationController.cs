@@ -51,5 +51,17 @@ namespace HelpdeskSystem.Controllers
                 success = true
             });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var notifications = await _notificationService.GetAllNotificationById();
+            if (notifications.IsFailure)
+            {
+                return NotFound();
+            }
+            return View(notifications.Value);
+        }
+
     }
 }

@@ -557,3 +557,72 @@ select:focus {
         color: #dc3545;
         font-size: 14px;
     }
+.notification-history-page {
+    width: 100%;
+    margin: 20px auto;
+}
+
+    .notification-history-page h2 {
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+.notification-history-list {
+    border: 1px solid black;
+    border-radius: 6px;
+    
+}
+
+.notification-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #ddd;
+}
+
+    .notification-history-item:last-child {
+        border-bottom: none;
+    }
+
+.notification-history-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .notification-history-content small {
+        color: #777;
+    }
+
+.notification-history-status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+    .notification-history-status.read {
+        background: #eee;
+        color: #555;
+    }
+
+    .notification-history-status.unread {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+.notification-history-empty {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: #777;
+}
+
+.notification-history-link {
+    text-align: center;
+    margin-left: 80px;
+}
+.view-all-notifications{
+    text-align:center;
+    margin-left:80px;
+}

@@ -23,9 +23,12 @@ function showNotifications(notifications) {
 
     if (notifications.length === 0) {
 
-        notificationList.html(
-            '<div class="no-notifications">No new notifications</div>'
-        );
+        notificationList.html(`
+           <div class="no-notifications">No new notifications</div>
+           <a href="/Notification/Index" class="view-all-notifications">
+                View all notifications
+            </a>
+        `);
 
         return;
     }
@@ -47,6 +50,11 @@ function showNotifications(notifications) {
 
         notificationList.append(item);
     });
+    notificationList.append(`
+        <a href="/Notification/Index" class="view-all-notifications">
+            View all notifications
+        </a>
+    `);
 }
 
 
@@ -57,8 +65,8 @@ function markNotificationAsRead(notificationId) {
         type: "POST",
 
         success: function () {
-
-            loadNotifications();
+            
+            window.location.href = "/Notification/Index";
         }
     });
 }

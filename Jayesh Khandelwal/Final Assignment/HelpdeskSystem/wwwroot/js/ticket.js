@@ -23,7 +23,6 @@ function addComment(ticketId) {
         },
 
         success: function (response) {
-
             $("#commentText").val("");
             $("#commentMessage").text(response.message);
             location.reload();

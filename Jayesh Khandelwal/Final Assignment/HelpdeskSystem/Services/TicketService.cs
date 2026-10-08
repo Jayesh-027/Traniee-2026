@@ -134,7 +134,7 @@ namespace HelpdeskSystem.Services
             if (!ticket.RowVersion.SequenceEqual(model.RowVersion))
             {
                 return Result<bool>.Failure(
-                    "This ticket was modified by another user. Please refresh the page and try again."
+                    "This ticket was modified by another user. Please refresh the page"
                 );
             }
             ticket.Title = model.Title;
@@ -182,7 +182,7 @@ namespace HelpdeskSystem.Services
             }
 
             await AddHistoryAsync(id,"Status Changed",oldStatus,newStatus.ToString());
-            await _notificationService.CreateAsync(ticket.CreatedByUserId,id,$"Ticket status changed to {newStatus}");
+            await _notificationService.CreateAsync(ticket.CreatedByUserId,id,$"Ticket status changed to {newStatus}: {ticket.Title}");
 
             return Result<bool>.Success(true);
         }
@@ -217,7 +217,7 @@ namespace HelpdeskSystem.Services
                 return Result<bool>.Failure("Unable to assign ticket");
             }
             await AddHistoryAsync(id,"Assigned",oldAgentId,agentId);
-            await _notificationService.CreateAsync(agentId,id,"Ticket is assigned");
+            await _notificationService.CreateAsync(agentId,id,$"Ticket is assigned To Agent{ticket.Title} ");
             return Result<bool>.Success(true);
         }
 
@@ -291,7 +291,7 @@ namespace HelpdeskSystem.Services
 
             if (recipientId != null && recipientId != userId)
             {
-                await _notificationService.CreateAsync( recipientId,  ticketId, "New Comment on Ticket");
+                await _notificationService.CreateAsync( recipientId,  ticketId,$"New Comment on Ticket:{ticket.Title}");
             }
             return Result<bool>.Success(true);
         }

@@ -24,19 +24,24 @@ namespace HelpdeskSystem.Controllers
                                                 string? sort = null, int page = 1, int pageSize =10)
         {
             var tickets = await _ticketService.GetTicketsAsync(status,priority,assignee,overdue,search, sort,page, pageSize);
+            var model = new TicketListViewModel
+            {
+                Tickets = tickets,
+                Status = status,
+                Priority = priority,
+                Assignee = assignee,
+                Overdue = overdue,
+                Search = search,
+                Sort = sort,
+                Page = page
+            };
+
             if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
             {
-                ViewBag.Agents = await _ticketService.GetAgentsAsync();
+                model.Agents = await _ticketService.GetAgentsAsync();
             }
-            ViewBag.Status = status;
-            ViewBag.Priority = priority;
-            ViewBag.Assignee = assignee;
-            ViewBag.Overdue = overdue;
-            ViewBag.Search = search;
-            ViewBag.Sort = sort;
-            ViewBag.Page = page;
 
-            return View(tickets);
+            return View(model);
         }
 
         [HttpGet]
@@ -44,8 +49,18 @@ namespace HelpdeskSystem.Controllers
                                                 string? sort = null,int page = 1,int pageSize = 10)
         {
             var tickets = await _ticketService.GetTicketsAsync(status,priority,assignee,overdue,search,sort,page,pageSize);
-            ViewBag.Page = page;
-            return PartialView("_TicketList", tickets);
+            var model = new TicketListViewModel
+            {
+                Tickets = tickets,
+                Status = status,
+                Priority = priority,
+                Assignee = assignee,
+                Overdue = overdue,
+                Search = search,
+                Sort = sort,
+                Page = page
+            };
+            return PartialView("_TicketList", model);
         }
 
 
@@ -138,9 +153,7 @@ namespace HelpdeskSystem.Controllers
                 return NotFound();
             }
 
-            ViewBag.NextStatuses =
-                _ticketWorkflowService.GetNextStatuses(
-                    result.Value.Status);
+            ViewBag.NextStatuses = _ticketWorkflowService.GetNextStatuses(result.Value.Status);
 
             return View(result.Value);
         }

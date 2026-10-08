@@ -1,4 +1,4 @@
-﻿@model List<HelpdeskSystem.Models.Ticket>
+﻿@model HelpdeskSystem.ViewModels.TicketListViewModel
 
 @{
     ViewData["Title"] = "Tickets";
@@ -15,43 +15,43 @@
 
         <select name="status" class="filter-input">
             <option value="">All Status</option>
-            <option value="New" selected="@(ViewBag.Status == "New")">New</option>
-            <option value="Assigned" selected="@(ViewBag.Status == "Assigned")">Assigned</option>
-            <option value="InProgress" selected="@(ViewBag.Status == "InProgress")">In Progress</option>
-            <option value="Resolved" selected="@(ViewBag.Status == "Resolved")">Resolved</option>
-            <option value="Closed" selected="@(ViewBag.Status == "Closed")">Closed</option>
+            <option value="New" selected="@(Model.Status == "New")">New</option>
+            <option value="Assigned" selected="@(Model.Status == "Assigned")">Assigned</option>
+            <option value="InProgress" selected="@(Model.Status == "InProgress")">In Progress</option>
+            <option value="Resolved" selected="@(Model.Status == "Resolved")">Resolved</option>
+            <option value="Closed" selected="@(Model.Status == "Closed")">Closed</option>
         </select>
         @if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
         {
             <select name="assignee" class="filter-input">
                 <option value="">All Assignees</option>
-                @foreach (var agent in ViewBag.Agents)
+                @foreach (var agent in Model.Agents)
                 {
-                    <option value="@agent.Id" selected="@(ViewBag.Assignee == agent.Id)">
+                    <option value="@agent.Id" selected="@(Model.Assignee == agent.Id)">
                         @agent.Email
                     </option>
                 }
             </select>
         }
         
-        <input type="text" name="search" class="filter-input"placeholder="Search..." value="@ViewBag.Search" />
+        <input type="text" name="search" class="filter-input"placeholder="Search..." value="@Model.Search" />
 
         <select name="sort" class="filter-input">
             <option value="">Newest</option>
-            <option value="oldest" selected="@(ViewBag.Sort == "oldest")">Oldest</option>
+            <option value="oldest" selected="@(Model.Sort == "oldest")">Oldest</option>
         </select>
         @if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
 
         {
             <select name="priority" class="filter-input">
                 <option value="">All Priority</option>
-                <option value="High" selected="@(ViewBag.Priority == "High")">High</option>
-                <option value="Medium" selected="@(ViewBag.Priority == "Medium")">Medium</option>
-                <option value="Low" selected="@(ViewBag.Priority == "Low")">Low</option>
+                <option value="High" selected="@(Model.Priority == "High")">High</option>
+                <option value="Medium" selected="@(Model.Priority == "Medium")">Medium</option>
+                <option value="Low" selected="@(Model.Priority == "Low")">Low</option>
             </select>
 
             <label class="overdue-option">
-                <input type="checkbox" name="overdue" value="true" checked="@(ViewBag.Overdue)" />
+                <input type="checkbox" name="overdue" value="true" checked="@(Model.Overdue)" />
                 Overdue
             </label>
         }

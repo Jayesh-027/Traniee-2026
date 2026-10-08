@@ -44,5 +44,12 @@ namespace HelpdeskSystem.Repositories
 
             return await _context.SaveChangesAsync() > 0;
         }
+        public async Task<List<Notification>> GetAllAsync(string userId)
+        {
+            return await _context.Notifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+        }
     }
 }
